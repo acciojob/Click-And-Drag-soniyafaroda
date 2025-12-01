@@ -1,16 +1,18 @@
-// Your code here.
-const container = document.getElementById("container");
+const container = document.querySelector(".container");
 const cubes = document.querySelectorAll(".cube");
 
 let activeCube = null;
 let offsetX = 0;
 let offsetY = 0;
 
-// Initial grid placement (optional)
+/* ----------------------------------
+   1. PLACE CUBES IN A DEFAULT GRID
+-----------------------------------*/
 function placeCubesInGrid() {
-    let x = 0, y = 0;
-    const cubeSize = 80;
+    const cubeSize = 80;  // must match CSS width/height
     const gap = 10;
+
+    let x = 0, y = 0;
 
     cubes.forEach(cube => {
         cube.style.left = x + "px";
@@ -24,45 +26,50 @@ function placeCubesInGrid() {
         }
     });
 }
+
 placeCubesInGrid();
 
-// Mouse down → select cube
+/* ----------------------------------
+   2. MOUSE DOWN → SELECT CUBE
+-----------------------------------*/
 cubes.forEach(cube => {
     cube.addEventListener("mousedown", (e) => {
         activeCube = cube;
-        const rect = cube.getBoundingClientRect();
 
-        // Store mouse offset inside cube
+        const rect = cube.getBoundingClientRect();
         offsetX = e.clientX - rect.left;
         offsetY = e.clientY - rect.top;
 
-        cube.style.zIndex = 1000; // Bring to front
+        cube.style.zIndex = 1000; // bring to front
     });
 });
 
-// Mouse move → drag cube
+/* ----------------------------------
+   3. MOUSE MOVE → DRAG CUBE
+-----------------------------------*/
 document.addEventListener("mousemove", (e) => {
     if (!activeCube) return;
 
     const containerRect = container.getBoundingClientRect();
 
-    // Compute new position (centered on mouse)
+    // Calculate new coordinates
     let newLeft = e.clientX - containerRect.left - offsetX;
-    let newTop = e.clientY - containerRect.top - offsetY;
+    let newTop  = e.clientY - containerRect.top - offsetY;
 
-    // Boundary limits
-    newLeft = Math.max(0, Math.min(newLeft, container.clientWidth - activeCube.offsetWidth));
-    newTop = Math.max(0, Math.min(newTop, container.clientHeight - activeCube.offsetHeight));
+    // Apply boundary constraints
+    newLeft = Math.max(0, Math.min(newLeft, containerRect.width - activeCube.offsetWidth));
+    newTop  = Math.max(0, Math.min(newTop, containerRect.height - activeCube.offsetHeight));
 
-    // Apply position
     activeCube.style.left = newLeft + "px";
     activeCube.style.top = newTop + "px";
 });
 
-// Mouse up → drop cube
+/* ----------------------------------
+   4. MOUSE UP → RELEASE CUBE
+-----------------------------------*/
 document.addEventListener("mouseup", () => {
     if (activeCube) {
         activeCube.style.zIndex = 1;
+        activeCube = null;
     }
-    activeCube = null;
 });
