@@ -34,6 +34,7 @@
 
   <script>
     const container = document.getElementById('container');
+const itemsWrapper = container.querySelector('.items');
 
     // Create 8 cubes arranged approximately in a grid
     const positions = [
@@ -46,7 +47,7 @@
       cube.className = 'cube';
       cube.style.left = pos[0] + 'px';
       cube.style.top = pos[1] + 'px';
-      container.appendChild(cube);
+      itemsWrapper.appendChild(cube);
     });
 
     let selectedCube = null;
