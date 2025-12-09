@@ -3,28 +3,27 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #f3f3f3;
+  background: #f4f4f4;
   margin: 0;
 }
 
-.container {
-  width: 420px;
-  height: 420px;
+.items {
+  width: 400px;
+  height: 400px;
   background: #ddd;
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 10px;
   box-sizing: border-box;
 }
 
 .cube {
-  width: 180px;
-  height: 180px;
+  width: 150px;
+  height: 150px;
   background: #3498db;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: grab;
   position: absolute;
 }
@@ -32,5 +31,5 @@ body {
 .cube.dragging {
   cursor: grabbing;
   opacity: 0.8;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }

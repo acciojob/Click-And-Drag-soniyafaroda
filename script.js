@@ -1,58 +1,45 @@
-const container = document.getElementById("container");
+const container = document.getElementById("items");
 const cubes = document.querySelectorAll(".cube");
 
+let isDragging = false;
 let activeCube = null;
-let offsetX = 0;
-let offsetY = 0;
+let offsetX, offsetY;
 
-// Position cubes in grid initially
-let positions = [
-    { x: 10, y: 10 },
-    { x: 210, y: 10 },
-    { x: 10, y: 210 },
-    { x: 210, y: 210 }
-];
+cubes.forEach(cube => {
+  // Place cubes in grid initially
+  cube.style.left = (Math.random() * 200) + "px";
+  cube.style.top = (Math.random() * 200) + "px";
 
-cubes.forEach((cube, index) => {
-    cube.style.left = positions[index].x + "px";
-    cube.style.top = positions[index].y + "px";
+  cube.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    activeCube = cube;
+    cube.classList.add("dragging");
 
-    cube.addEventListener("mousedown", (e) => {
-        activeCube = cube;
-        cube.classList.add("dragging");
-
-        // Mouse offset inside cube
-        offsetX = e.clientX - cube.offsetLeft;
-        offsetY = e.clientY - cube.offsetTop;
-
-        document.addEventListener("mousemove", dragCube);
-        document.addEventListener("mouseup", dropCube);
-    });
+    const rect = cube.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+  });
 });
 
-function dragCube(e) {
-    if (!activeCube) return;
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging || !activeCube) return;
 
-    let containerRect = container.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  const cubeRect = activeCube.getBoundingClientRect();
 
-    let newX = e.clientX - offsetX - containerRect.left;
-    let newY = e.clientY - offsetY - containerRect.top;
+  let x = e.clientX - containerRect.left - offsetX;
+  let y = e.clientY - containerRect.top - offsetY;
 
-    // Apply boundaries
-    newX = Math.max(0, Math.min(newX, containerRect.width - activeCube.offsetWidth));
-    newY = Math.max(0, Math.min(newY, containerRect.height - activeCube.offsetHeight));
+  // Boundary constraints
+  x = Math.max(0, Math.min(x, containerRect.width - cubeRect.width));
+  y = Math.max(0, Math.min(y, containerRect.height - cubeRect.height));
 
-    activeCube.style.left = newX + "px";
-    activeCube.style.top = newY + "px";
-}
+  activeCube.style.left = x + "px";
+  activeCube.style.top = y + "px";
+});
 
-function dropCube() {
-    if (activeCube) {
-        activeCube.classList.remove("dragging");
-    }
-
-    document.removeEventListener("mousemove", dragCube);
-    document.removeEventListener("mouseup", dropCube);
-
-    activeCube = null;
-}
+document.addEventListener("mouseup", () => {
+  if (activeCube) activeCube.classList.remove("dragging");
+  isDragging = false;
+  activeCube = null;
+});
